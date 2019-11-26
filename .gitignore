@@ -1,0 +1,6 @@
+.env/
+cdk.out/
+*/cdk/cdk.egg-info/
+/.idea/
+*/__pycache__/
+.vscode/settings.json
