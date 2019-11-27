@@ -173,3 +173,30 @@ class VpcStack(core.Construct):
             route_table_id = private_route_table_2.ref,
             subnet_id = private_subnet_2.ref
         )
+        
+        # Output
+        core.CfnOutput(self, "VPCOutput",
+            value = vpc.ref,
+            description = "VPC",
+            export_name = "VPC"
+        )
+        core.CfnOutput(self, "PublicSubnet1Output",
+            value = public_subnet_1.ref,
+            description = "PublicSubnet1",
+            export_name = "PublicSubnet1"
+        )
+        core.CfnOutput(self, "PublicSubnet2Output",
+            value = public_subnet_2.ref,
+            description = "PublicSubnet2",
+            export_name = "PublicSubnet2"
+        )
+        core.CfnOutput(self, "PrivateSubnet1Output",
+            value = private_subnet_1.ref,
+            description = "PrivateSubnet1",
+            export_name = "PrivateSubnet1"
+        )
+        core.CfnOutput(self, "PrivateSubnet2Output",
+            value = private_subnet_2.ref,
+            description = "PrivateSubnet2",
+            export_name = "PrivateSubnet2"
+        )
