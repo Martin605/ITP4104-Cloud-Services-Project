@@ -92,22 +92,7 @@ class IAMStack(core.Construct):
             user_name = cfn_user.ref
         )
         
-        '''
-        # S3 Bucket
-        aws_account_id = core.Aws.ACCOUNT_ID
-        source_bucket = "sourcebucketname%s" % (aws_account_id)
         
-        s3_bucket = s3.Bucket(
-            self, "SourceBucket",
-            bucket_name = source_bucket
-            removal_policy = core.RemovalPolicy.DESTROY
-        )
-        
-        # VPCStack
-        vpc_stack = cloudformation.CfnStack(self, "VPCStack",
-            template_url = 'https://%s.s3.amazonaws.com/vpc.yaml' % (source_bucket),
-            timeout_in_minutes = 5
-        )'''
         
         # Output
         core.CfnOutput(self, "AccessKeyOutput",
