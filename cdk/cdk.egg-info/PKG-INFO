@@ -1,0 +1,60 @@
+Metadata-Version: 2.1
+Name: cdk
+Version: 0.0.1
+Summary: An empty CDK Python app
+Home-page: UNKNOWN
+Author: author
+License: UNKNOWN
+Description: # ITP4104 Project
+        ## Rewrite CloudFormation
+        https://github.com/wongcyrus/AWS-Developer-Building-on-AWS
+        ## Rewritten Exercise
+        * `Exercise3`
+        * `Exercise4`
+        * `Exercise5`
+        * `Exercise6`
+        ### Welcome to CDK Python project!
+        
+        **Linux/Mac platform**
+        
+        ```
+        $ python -m venv .env
+        $ source .env/bin/activate
+        ```
+        
+        **Windows platform**
+        
+        ```
+        % .env\Scripts\activate.bat
+        ```
+        
+        Once the virtualenv is activated, you can install the required dependencies.
+        
+        ```
+        $ pip install -r requirements.txt
+        $ cdk synth
+        ```
+        
+        # CDK Useful commands
+        
+         * `cdk ls`          list all stacks in the app
+         * `cdk synth`       emits the synthesized CloudFormation template
+         * `cdk deploy`      deploy this stack to your default AWS account/region
+         * `cdk destroy`     destroy this stack to your default AWS account/region
+         * `cdk diff`        compare deployed stack with current state
+         * `cdk docs`        open CDK documentation
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: JavaScript
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Software Development :: Code Generators
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

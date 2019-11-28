@@ -5,13 +5,12 @@ from aws_cdk import (
     aws_s3 as s3,
     core
     )
-from cdk.vpc_stack import VpcStack
 
-class CdkStack(core.Stack):
+class IAMStack(core.Construct):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
-
+        
         # Exercise 4
         # Set Parameters
         parameters = core.CfnParameter(self, "SourceBucket",
@@ -34,7 +33,7 @@ class CdkStack(core.Stack):
             login_profile = {
                 "password" : password_parameters.value_as_string
             }
-        )
+        )   
         
         # CFNUserGroup
         cfn_user_group = iam.CfnGroup(self, "CFNUserGroup",
@@ -96,7 +95,6 @@ class CdkStack(core.Stack):
         '''
         # S3 Bucket
         aws_account_id = core.Aws.ACCOUNT_ID
-        
         source_bucket = "sourcebucketname%s" % (aws_account_id)
         
         s3_bucket = s3.Bucket(
@@ -111,4 +109,21 @@ class CdkStack(core.Stack):
             timeout_in_minutes = 5
         )'''
         
-        VpcStack(self, "VpcStack")
+        # Output
+        core.CfnOutput(self, "AccessKeyOutput",
+            value = cfn_keys.ref,
+            description = "AWSAccessKeyId of new user",
+            export_name = "AccessKey"
+        )
+        core.CfnOutput(self, "SecretKeyOutput",
+            value = cfn_keys.attr_secret_access_key,
+            description = "AWSSecretKey of new user",
+            export_name = "SecretKey"
+        )
+        core.CfnOutput(self, "edXProjectUser",
+            value = cfn_user.attr_arn,
+            description = "edXProjectUser",
+            export_name = "edXProjectUser"
+        )
+        
+        
