@@ -1,5 +1,11 @@
 # ITP4104 Project
 ## Rewrite CloudFormation
+https://github.com/wongcyrus/AWS-Developer-Building-on-AWS
+## Rewritten Exercise
+* `Exercise3`
+* `Exercise4`
+* `Exercise5`
+* `Exercise6`
 ### Welcome to CDK Python project!
 
 **Linux/Mac platform**
