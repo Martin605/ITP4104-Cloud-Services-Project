@@ -16,21 +16,7 @@ class DBStack(core.Construct):
         
         # Exercise 7
         # Set Parameters
-        ec2_vpc_id_parameters = core.CfnParameter(self, "EC2VpcId",
-            description = "AWS::EC2::VPC::Id",
-            default = "default"
-        )
-        
-        private_subnet_1_parameters = core.CfnParameter(self, "PrivateSubnet1",
-            description = "AWS::EC2::Subnet::Id",
-            default = "default"
-        )
-        
-        private_subnet_2_parameters = core.CfnParameter(self, "PrivateSubnet2",
-            description = "AWS::EC2::Subnet::Id",
-            default = "default"
-        )
-        
+
         password_parameters = core.CfnParameter(self, "DBPassword",
             no_echo = True,
             description = "New account and RDS password",
@@ -43,8 +29,10 @@ class DBStack(core.Construct):
         # DBSecurityGroup:
         db_security_group = rds.CfnDBSecurityGroup(self, "DBSecurityGroup",
             ec2_vpc_id = core.Fn.import_value("VPC"),
-            db_security_group_ingress = { 
-                "CIDRIP" : "10.1.0.0/16"
-            },
+            db_security_group_ingress = [
+                {
+                    "CIDRIP" : "10.1.0.0/16"
+                },
+            ],
             group_description = "Frontend Access"
         )

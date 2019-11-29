@@ -200,3 +200,9 @@ class VpcStack(core.Construct):
             description = "PrivateSubnet2",
             export_name = "PrivateSubnet2"
         )
+        
+        self.VPC = vpc.ref
+        self.PublicSubnet1 = public_subnet_1.ref
+        self.PublicSubnet2 = public_subnet_2.ref
+        self.PrivateSubnet1 = private_subnet_1.ref
+        self.PrivateSubnet2 = private_subnet_2.ref

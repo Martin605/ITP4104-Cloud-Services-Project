@@ -92,8 +92,6 @@ class IAMStack(core.Construct):
             user_name = cfn_user.ref
         )
         
-        
-        
         # Output
         core.CfnOutput(self, "AccessKeyOutput",
             value = cfn_keys.ref,
@@ -111,4 +109,6 @@ class IAMStack(core.Construct):
             export_name = "edXProjectUser"
         )
         
-        
+        self.AccessKey = cfn_keys.ref
+        self.SecretKey = cfn_keys.attr_secret_access_key
+        self.edXProjectUser = cfn_user.attr_arn

@@ -9,10 +9,14 @@ from aws_cdk import (
 from cdk.vpc_stack import VpcStack
 from cdk.iam_stack import IAMStack
 from cdk.cloud9_stack import Cloud9Stack
+from cdk.db_stack import DBStack
+
 class CdkStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
+        
+        cloud9_stack = Cloud9Stack(self, "Cloud9Stack")
         
         '''
         # S3 Bucket
@@ -43,7 +47,3 @@ class CdkStack(core.Stack):
                 "PublicSubnet1" : core.Fn.import_value("PublicSubnet1")
             }
         '''
-        
-        Cloud9Stack(self, "Cloud9Stack")
-        IAMStack(self, "IAMStack")
-        VpcStack(self, "VpcStack")
