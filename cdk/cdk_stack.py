@@ -10,13 +10,16 @@ from cdk.vpc_stack import VpcStack
 from cdk.iam_stack import IAMStack
 from cdk.cloud9_stack import Cloud9Stack
 from cdk.db_stack import DBStack
+# from cdk.parameter_stack import ParametersStack
+from cdk.cognito_stack import CognitoStack
 
 class CdkStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
         
-        cloud9_stack = Cloud9Stack(self, "Cloud9Stack")
+        # cloud9_stack = Cloud9Stack(self, "Cloud9Stack")
+        cognito_stack = CognitoStack(self, "CognitoStack")
         
         '''
         # S3 Bucket

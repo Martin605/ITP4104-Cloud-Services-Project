@@ -4,3 +4,6 @@ aws_cdk.aws_cloudformation
 aws_cdk.aws_s3
 aws_cdk.aws_cloud9
 aws_cdk.aws_rds
+aws_cdk.aws_ssm
+aws_cdk.aws_cognito
+
