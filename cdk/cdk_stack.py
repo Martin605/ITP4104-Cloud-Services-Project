@@ -10,7 +10,6 @@ from cdk.vpc_stack import VpcStack
 from cdk.iam_stack import IAMStack
 from cdk.cloud9_stack import Cloud9Stack
 from cdk.db_stack import DBStack
-from cdk.parameter_stack import ParametersStack
 
 class CdkStack(core.Stack):
 
