@@ -9,6 +9,7 @@ from aws_cdk import (
 from cdk.vpc_stack import VpcStack
 from cdk.iam_stack import IAMStack
 from cdk.cloud9_stack import Cloud9Stack
+from cdk.web_stack import WebStack
 class CdkStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
@@ -44,6 +45,25 @@ class CdkStack(core.Stack):
             }
         '''
         
-        Cloud9Stack(self, "Cloud9Stack")
-        IAMStack(self, "IAMStack")
-        VpcStack(self, "VpcStack")
+        cloud9_stack = Cloud9Stack(self, "Cloud9Stack")
+        iam_stack = IAMStack(self, "IAMStack")
+        vpc_stack = VpcStack(self, "VpcStack")
+        web_stack = WebStack(self, "WebStack",
+                ec2_vpc_id = 'vpc_stack.vpc',
+                private_subnet_1="vpc_stack.private_subnet_1",
+                private_subnet_2="vpc_stack.private_subnet_2",
+                web_server_instance_profile="security_stack.web_server_instance_profile",
+                web_server_role="security_stack.web_server_role",
+                web_security_group="security_stack.web_security_group",
+                load_balancer_arn="cdn_stack.load_balancer_arn"
+                )
+        # web_stack = WebStack(self, "WebStack", 
+        #         ec2_vpc_id = vpc_stack.vpc,
+        #         private_subnet_1=vpc_stack.private_subnet_1,
+        #         private_subnet_2=vpc_stack.private_subnet_2,
+        #         web_server_instance_profile=security_stack.web_server_instance_profile,
+        #         web_server_role=security_stack.web_server_role,
+        #         web_security_group=security_stack.web_security_group,
+        #         load_balancer_arn=cdn_stack.load_balancer_arn
+        #         )
+    
