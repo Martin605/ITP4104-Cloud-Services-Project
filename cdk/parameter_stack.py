@@ -7,34 +7,35 @@ class ParametersStack(core.Construct):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
+        
         # Parameters
         CognitoPoolId = core.CfnParameter(self,"CognitoPoolId",
             type = "String",
-            default = "default"
+            default = "CognitoPoolId"
         )
         CognitoClientId = core.CfnParameter(self,"CognitoClientId",
             type = "String",
-            default = "default"
+            default = "CognitoClientId"
         )
         CognitoClientSecret = core.CfnParameter(self,"CognitoClientSecret",
             type = "String",
-            default = "default"
+            default = "CognitoClientSecret"
         )
         CognitoDomain = core.CfnParameter(self,"CognitoDomain",
             type = "String",
-            default = "default"
+            default = "CognitoDomain"
         )
         BaseUrl = core.CfnParameter(self,"BaseUrl",
             type = "String",
-            default = "default"
+            default = "BaseUrl"
         )
         MyDBEndpoint = core.CfnParameter(self,"MyDBEndpoint",
             type = "String",
-            default = "default"
+            default = "MyDBEndpoint"
         )
         ImageS3Bucket = core.CfnParameter(self,"ImageS3Bucket",
             type = "String",
-            default = "default"
+            default = "ImageS3Bucket"
         )
         DBPassword_parameters = core.CfnParameter(self, "DBPassword",
             no_echo = True,

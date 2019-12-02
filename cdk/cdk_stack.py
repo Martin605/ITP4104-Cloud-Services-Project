@@ -9,15 +9,20 @@ from aws_cdk import (
 from cdk.vpc_stack import VpcStack
 from cdk.iam_stack import IAMStack
 from cdk.cloud9_stack import Cloud9Stack
+from cdk.security_stack import SecurityStack
 from cdk.db_stack import DBStack
 from cdk.parameter_stack import ParametersStack
+
 
 class CdkStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
         
+        vpc_stack = VpcStack(self, "VpcStack")
+        iam_stack = IAMStack(self, "IAMStack")
         cloud9_stack = Cloud9Stack(self, "Cloud9Stack")
+        security_stack = SecurityStack(self, "SecurityStack")
         
         '''
         # S3 Bucket
