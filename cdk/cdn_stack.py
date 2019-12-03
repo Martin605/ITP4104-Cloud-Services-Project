@@ -12,6 +12,13 @@ class CdnStack(core.Construct):
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
         
+        
+        # Api
+        api = apigw.CfnRestApi(self, "Api",
+            name = "WebProxyApi",
+            binary_media_types = ["*"]
+        )
+        
         # WebpageCDN
         webpage_cdn = cloudfront.CfnDistribution(self, 'WebpageCdn',
             distribution_config = {
@@ -45,7 +52,7 @@ class CdnStack(core.Construct):
                 },
                 "enabled" : True,
                 "origins" : [{
-                    "domainName" : "Fn::Sub : ${Api}.execute-api.${AWS::Region}.amazonaws.com",
+                    "domainName" : "%s.execute-api.%s.amazonaws.com" % (api.ref, core.Aws.REGION),
                     "id" : "website",
                     "originPath" : "/Prod",
                     "customOriginConfig" : { "originProtocolPolicy" : "https-only" },
@@ -95,12 +102,6 @@ class CdnStack(core.Construct):
         # Account
         account = apigw.CfnAccount(self, "Account",
             cloud_watch_role_arn = cloud_watch_role.attr_arn
-        )
-        
-        # Api
-        api = apigw.CfnRestApi(self, "Api",
-            name = "WebProxyApi",
-            binary_media_types = ["*"]
         )
         
         #Resource
