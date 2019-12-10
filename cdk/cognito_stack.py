@@ -38,36 +38,34 @@ class CognitoStack(core.Stack):
         )
         # CognitoSNSPolicy
 
-        CognitoSNSPolicy = iam.ManagedPolicy(
+        CognitoSNSPolicy = iam.CfnManagedPolicy(
             self, 'CognitoSNSPolicy',
             description='Managed policy to allow Amazon Cognito to access SNS',
-            statements=[iam.PolicyStatement(
-                actions=["sns:publish"],
-                resources=['*']
-            )])
+            policy_document={
+                "Version": "2012-10-17",
+                "Statement": {
+                    "Effect": "Allow",
+                    "Action": ["sns:publish"],
+                    "Resource": "*"
+                }
+            })
 
         # SNSRole
-        sns_role = iam.CfnRole(
+        SNSRole = iam.CfnRole(
             self, "SNSRole",
             role_name="SNSRole",
-            managed_policy_arns=CognitoSNSPolicy.att_arn,
+            managed_policy_arns=[CognitoSNSPolicy.ref],
             assume_role_policy_document={
                 "Version": "2012-10-17",
                 "Statement": [
                     {
                         "Effect": "Allow",
-                        "Principal": {
-                            "Service": [
-                                "cognito-idp.amazonaws.com"
-                            ]
-                        },
-                        "Action": [
-                            "sts:AssumeRole"
-                        ]
-                    }
-                ]
+                        "Action": ["sts:AssumeRole"],
+                        "Principal": {"Service": ["cognito-idp.amazonaws.com"]}
+                    }]
             }
         )
+        SNSRole.add_depends_on(CognitoSNSPolicy)
 
         # CognitoUserPool
         CognitoUserPool = cognito.CfnUserPool(
@@ -109,10 +107,10 @@ class CognitoStack(core.Stack):
             }],
             sms_configuration={
                 "externalId": "%s-external" % (core.Aws.STACK_NAME),
-                "snsCallerArn": sns_role.role_arn
+                "snsCallerArn": SNSRole.attr_arn
             }
         )
- 
+
         # CognitoUserPoolClient
         CognitoUserPoolClient = cognito.CfnUserPoolClient(
             self, "UserPoolClient",
@@ -264,27 +262,28 @@ class CognitoStack(core.Stack):
 
         # Output
         core.CfnOutput(self, "CognitoUserPoolIdOutput",
-            value = CognitoUserPool.ref,
-            description = "The Pool ID of the Cognito User Pool",
-            export_name = "CognitoUserPoolId"
-        )
+                       value=CognitoUserPool.ref,
+                       description="The Pool ID of the Cognito User Pool",
+                       export_name="CognitoUserPoolId"
+                       )
         core.CfnOutput(self, "CognitoUserPoolProviderURLOutput",
-            value = CognitoUserPool.attr_provider_url,
-            description = "The Pool ProviderURL of the Cognito User Pool",
-            export_name = "CognitoUserPoolProviderURL"
-        )
+                       value=CognitoUserPool.attr_provider_url,
+                       description="The Pool ProviderURL of the Cognito User Pool",
+                       export_name="CognitoUserPoolProviderURL"
+                       )
         core.CfnOutput(self, "CognitoUserPoolArnOutput",
-            value = CognitoUserPool.attr_arn,
-            description = "The Pool Arn of the Cognito User Pool",
-            export_name = "CognitoUserPoolArn"
-        )
+                       value=CognitoUserPool.attr_arn,
+                       description="The Pool Arn of the Cognito User Pool",
+                       export_name="CognitoUserPoolArn"
+                       )
         core.CfnOutput(self, "CognitoUserPoolClientIdOutput",
-            value = CognitoUserPoolClient.ref,
-            description = "The App Client ID ",
-            export_name = "CognitoUserPoolClientId"
-        )
+                       value=CognitoUserPoolClient.ref,
+                       description="The App Client ID ",
+                       export_name="CognitoUserPoolClientId"
+                       )
         core.CfnOutput(self, "ClientSecretOutput",
-            value = core.Fn.get_att("CognitoUserPoolClientClientSettings","ClientSecret").to_string(),
-            description = "The Client Secret ",
-            export_name = "ClientSecret"
-        )
+                       value=core.Fn.get_att(
+                           "CognitoUserPoolClientClientSettings", "ClientSecret").to_string(),
+                       description="The Client Secret ",
+                       export_name="ClientSecret"
+                       )
