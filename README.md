@@ -6,11 +6,13 @@ https://github.com/wongcyrus/AWS-Developer-Building-on-AWS
 * `VPCStack      :Exercise3 (Monty)`
 * `SecurityStack :Exercise11(Monty)`
 * `DBStack       :Exercise11(Monty)`
+
   `WebStack      :Exercise10`
 * `CDNStack      :Exercise9 (Monty)`
 * `ParametesStack:Exercise9 (Jacky)`
 * `Cloud9Stack   :Exercise9 (Monty)`
 * `CognitoStack  :Exercise9 (Jacky,Martin)`
+
   `SNSSQSStack   :Exercise12(Monty)`
 
 ### Welcome to CDK Python project!
