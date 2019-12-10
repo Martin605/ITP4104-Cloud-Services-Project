@@ -4,14 +4,13 @@ from aws_cdk import (
     )
 from datetime import datetime
 
-class VpcStack(core.Construct):
+class VpcStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # Exercise 3
         # Create VPC
-        az = core.Fn.get_azs(core.Aws.REGION)
         vpc = ec2.CfnVPC(self, "VPC",
             cidr_block = "10.1.0.0/16",
             tags = [{
