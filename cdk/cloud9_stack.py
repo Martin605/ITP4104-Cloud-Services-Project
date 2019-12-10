@@ -1,54 +1,118 @@
 from aws_cdk import (
-    aws_ec2 as ec2,
     aws_iam as iam,
-    aws_cloudformation as cloudformation,
-    aws_s3 as s3,
     aws_cloud9 as cloud9,
+    aws_lambda as lambda_,
+    aws_cloudformation as cfn,
+    aws_ec2 as ec2,
     core
     )
-from cdk.vpc_stack import VpcStack
-from cdk.iam_stack import IAMStack
-
-class Cloud9Stack(core.Construct):
+    
+class Cloud9Stack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
-        
-        vpc_stack = VpcStack(self, "VpcStack")
-        iam_stack = IAMStack(self, "IAMStack")
-        
-        # Exercise 5
+
+        # Exercise 9
         # Set Parameters
-        parameters = core.CfnParameter(self, "SourceBucket",
-            description = "Source Bucket with nested cloudformation template",
-            default = "default"
-        )
+        # PublicSubnet1 = core.CfnParameter(self, "PublicSubnet1",
+        #     type = "AWS::EC2::Subnet::Id",
+        #     default =  "PublicSubnet1"
+        # )
         
-        password_parameters = core.CfnParameter(self, "Password",
-            no_echo = True,
-            description = "New account password",
-            min_length = 1,
-            max_length = 41,
-            constraint_description = "the password must be between 1 and 41 characters",
-            default = "default"
+        # LambdaExecutionRole
+        lambda_execution_role = iam.CfnRole(self, "LambdaExecutionRole",
+            role_name= "lambda-execution-role",
+            assume_role_policy_document = {
+                "Version": "2012-10-17",
+                "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }]
+            },
+            path = "/",
+            policies = [
+            {
+                "policyName" : "root",
+                "policyDocument" : {
+                    "Version":"2012-10-17",
+                    "Statement" : [
+                    {
+                        "Effect": "Allow",
+                        "Action" : [
+                            "logs:CreateLogGroup",
+                            "logs:CreateLogStream",
+                            "logs:PutLogEvents"
+                        ],
+                        "Resource": "arn:aws:logs:*:*:*"
+                    },
+                    {
+                        "Effect" : "Allow",
+                        "Action" : [
+                            "ec2:Describe*"
+                         ],
+                        "Resource": "*"
+                    }]
+                }
+            }]
         )
         
         # EdxProjectCloud9
         edx_project_cloud9 = cloud9.CfnEnvironmentEC2(self, "EdxProjectCloud9",
-            owner_arn = iam_stack.edXProjectUser,
-            description = "Building On AWS Cloud9",
             automatic_stop_time_minutes = 30,
             instance_type = "t2.micro",
-            name = "BuildingOnAWS",
-            subnet_id = vpc_stack.PublicSubnet1
+            name = "BuildingOnAWS%s" % (core.Aws.STACK_NAME),
+            subnet_id = core.Fn.import_value("PublicSubnet1")
         )
         edx_project_cloud9.apply_removal_policy(core.RemovalPolicy.DESTROY)
         
-        # ImageS3Bucket
-        image_s3_bucket = s3.Bucket(self, "ImageS3Bucket",
-            bucket_name = "imagebucket%s" % (core.Aws.ACCOUNT_ID),
-            removal_policy=core.RemovalPolicy.DESTROY
+        # CustomFunction
+        custom_function = lambda_.CfnFunction(self,"CustomFunction",
+            runtime = "nodejs8.10",
+            handler = "index.handler",
+            code = {
+"zipFile": "const response = require('cfn-response');\n"
+"const AWS = require('aws-sdk');\n"
+"exports.handler = (event, context) => {\n"
+    "let params = {\n"
+        "Filters: [\n"
+        "{\n"
+            "Name: 'tag:aws:cloud9:environment',\n"
+            "Values: [\n"
+                "event.ResourceProperties.EdxProjectCloud9\n"
+            "]\n"
+        "}\n"
+        "]\n"
+    "};\n"
+    "let ec2 = new AWS.EC2();\n"
+    "ec2.describeInstances(params, (err, data) => {\n"
+        "if (err) {\n"
+            "console.log(err, err.stack); // an error occurred\n"
+            "response.send(event, context, response.FAILED, {});\n"
+        "}else{\n"
+            "let responseData = {Value: data.Reservations[0].Instances[0].SecurityGroups[0].GroupId};\n"       
+            "console.log(responseData);\n"
+            "response.send(event, context, response.SUCCESS, responseData);\n"
+        "}\n"        
+    "});\n"
+"};"
+            },
+            timeout = 30,
+            role = lambda_execution_role.attr_arn
         )
+        
+        # CustomResource
+        custom_resource = cfn.CfnCustomResource( self, "CustomResource",
+            service_token = custom_function.attr_arn,
+        )
+        custom_resource.add_override("Properties.EdxProjectCloud9", edx_project_cloud9.ref)
         
         # Output
         core.CfnOutput(self, "EdxProjectCloud9Output",
@@ -57,4 +121,8 @@ class Cloud9Stack(core.Construct):
             export_name = "EdxProjectCloud9"
         )
         
-        self.EdxProjectCloud9Output = edx_project_cloud9.ref
+        core.CfnOutput(self, "EdxProjectCloud9SgOutput",
+            value = core.Fn.get_att(custom_resource.logical_id, "Value").to_string(),
+            description = "Edx User Cloud9 Security Group ID",
+            export_name = "EdxProjectCloud9Sg"
+        )

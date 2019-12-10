@@ -4,10 +4,9 @@ from aws_cdk import (
     aws_cognito as cognito,
     aws_lambda as lambda_,
     core
-)
+    )
 
-
-class CognitoStack(core.Construct):
+class CognitoStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)

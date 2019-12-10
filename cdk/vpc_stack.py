@@ -1,10 +1,9 @@
 from aws_cdk import (
     aws_ec2 as ec2,
-    aws_iam as iam,
-    aws_cloudformation as cloudformation,
     core
     )
-    
+from datetime import datetime
+
 class VpcStack(core.Construct):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
@@ -12,6 +11,7 @@ class VpcStack(core.Construct):
 
         # Exercise 3
         # Create VPC
+        az = core.Fn.get_azs(core.Aws.REGION)
         vpc = ec2.CfnVPC(self, "VPC",
             cidr_block = "10.1.0.0/16",
             tags = [{
@@ -41,7 +41,7 @@ class VpcStack(core.Construct):
         
         # Create Public Subnet 1
         public_subnet_1 = ec2.CfnSubnet(self, "PublicSubnet1",
-            availability_zone = "us-east-1a",
+            availability_zone = core.Fn.select(0,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.1.0/24",
             vpc_id = vpc.ref,
             map_public_ip_on_launch = True,
@@ -80,7 +80,7 @@ class VpcStack(core.Construct):
         
         # Create Public Subnet 2
         public_subnet_2 = ec2.CfnSubnet(self, "PublicSubnet2",
-            availability_zone = "us-east-1b",
+            availability_zone = core.Fn.select(1,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.2.0/24",
             vpc_id = vpc.ref,
             map_public_ip_on_launch = True,
@@ -142,7 +142,7 @@ class VpcStack(core.Construct):
         
         # Create Private Subnet 1
         private_subnet_1 = ec2.CfnSubnet(self, "PrivateSubnet1",
-            availability_zone = "us-east-1a",
+            availability_zone = core.Fn.select(0,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.3.0/24",
             vpc_id = vpc.ref,
             tags = [{
@@ -153,7 +153,7 @@ class VpcStack(core.Construct):
         
         # Create Private Subnet 2
         private_subnet_2 = ec2.CfnSubnet(self, "PrivateSubnet2",
-            availability_zone = "us-east-1b",
+            availability_zone = core.Fn.select(1,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.4.0/24",
             vpc_id = vpc.ref,
             tags = [{
@@ -200,9 +200,3 @@ class VpcStack(core.Construct):
             description = "PrivateSubnet2",
             export_name = "PrivateSubnet2"
         )
-        
-        self.VPC = vpc.ref
-        self.PublicSubnet1 = public_subnet_1.ref
-        self.PublicSubnet2 = public_subnet_2.ref
-        self.PrivateSubnet1 = private_subnet_1.ref
-        self.PrivateSubnet2 = private_subnet_2.ref
