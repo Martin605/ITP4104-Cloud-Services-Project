@@ -11,7 +11,8 @@ from cdk.iam_stack import IAMStack
 from cdk.cloud9_stack import Cloud9Stack
 from cdk.security_stack import SecurityStack
 from cdk.db_stack import DBStack
-from cdk.parameter_stack import ParametersStack
+# from cdk.parameter_stack import ParametersStack
+from cdk.cognito_stack import CognitoStack
 
 
 class CdkStack(core.Stack):
@@ -23,6 +24,7 @@ class CdkStack(core.Stack):
         iam_stack = IAMStack(self, "IAMStack")
         cloud9_stack = Cloud9Stack(self, "Cloud9Stack")
         security_stack = SecurityStack(self, "SecurityStack")
+        cognito_stack = CognitoStack(self, "CognitoStack")
         
         '''
         # S3 Bucket
