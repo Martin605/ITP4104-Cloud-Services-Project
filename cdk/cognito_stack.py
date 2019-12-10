@@ -193,99 +193,33 @@ class CognitoStack(core.Stack):
                                          ]
                                          )
 
-        CloudFormationCognitoUserPoolClientSettings = lambda_.CfnFunction(self,"CloudFormationCognitoUserPoolClientSettings",
-            runtime = "nodejs8.10",
-            handler = "index.handler",
-            code = {"zipFile":
-            "const AWS = require('aws-sdk');\n"
-            "const response = require('cfn-response');\n"
-            "const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();\n"
-            "exports.handler = (event, context) => {\n"
-            "      try {\n"
-            "            switch (event.RequestType) {\n"
-            "                  case 'Create':\n"
-            "                  case 'Update':\n"
-            "                        cognitoIdentityServiceProvider.updateUserPoolClient({\n"
-            "                              UserPoolId: event.ResourceProperties.UserPoolId,\n"
-            "                              ClientId: event.ResourceProperties.UserPoolClientId,\n"
-            "                              SupportedIdentityProviders: event.ResourceProperties.SupportedIdentityProviders,\n"
-            "                              CallbackURLs: [event.ResourceProperties.CallbackURL],\n"
-            "                              LogoutURLs: [event.ResourceProperties.LogoutURL],\n"
-            "                              AllowedOAuthFlowsUserPoolClient: (event.ResourceProperties.AllowedOAuthFlowsUserPoolClient == 'true'),\n"
-            "                              AllowedOAuthFlows: event.ResourceProperties.AllowedOAuthFlows,\n"
-            "                              AllowedOAuthScopes: event.ResourceProperties.AllowedOAuthScopes\n"
-            "                        })\n"
-            "                              .promise()\n"
-            "                              .then(data => {\n"
-            "                                    let params = {\n"
-            "                                          Domain: event.ResourceProperties.AppDomain,\n"
-            "                                          UserPoolId: event.ResourceProperties.UserPoolId\n"
-            "                                    };\n"
-            "                                    console.log(params);\n"
-            "                                    return cognitoIdentityServiceProvider.createUserPoolDomain(params).promise();\n"
-            "                              })\n"
-            "                              .then(data => {\n"
-            "                                    let params = {\n"
-            "                                          ClientId: event.ResourceProperties.UserPoolClientId,\n"
-            "                                          UserPoolId: event.ResourceProperties.UserPoolId\n"
-            "                                    };\n"
-            "                                    return cognitoIdentityServiceProvider.describeUserPoolClient(params).promise();\n"
-            "                              })\n"
-            "                              .then(data => {\n"
-            "                                    console.log(data);\n"
-            "                                    let responseData = { ClientSecret: data.UserPoolClient.ClientSecret };\n"
-            "                                    console.log(responseData);\n"
-            "                                    response.send(event, context, response.SUCCESS, responseData);\n"
-            "                              })\n"
-            "                              .catch(err => {\n"
-            "                                    console.error(err);\n"
-            "                                    response.send(event, context, response.FAILED, {});\n"
-            "                              });\n"
-            "\n"
-            "                        break;\n"
-            "\n"
-            "                  case 'Delete':\n"
-            "                        let params = {\n"
-            "                              Domain: event.ResourceProperties.AppDomain,\n"
-            "                              UserPoolId: event.ResourceProperties.UserPoolId\n"
-            "                        };\n"
-            "                        cognitoIdentityServiceProvider.deleteUserPoolDomain(params).promise()\n"
-            "                              .then(data => response.send(event, context, response.SUCCESS, {}))\n"
-            "                              .catch(error => response.send(event, context, response.FAILED, {}));\n"
-            "                        break;\n"
-            "            }\n"
-            "\n"
-            "            console.info(`CognitoUserPoolClientSettings Success for request type ${event.RequestType}`);\n"
-            "      } catch (error) {\n"
-            "            console.error(`CognitoUserPoolClientSettings Error for request type ${event.RequestType}:`, error);\n"
-            "            response.send(event, context, response.FAILED, {});\n"
-            "      }\n"
-            "}"
-            },
-            role = CustomResourceRole.attr_arn
-        )
+        # CognitoUserPoolClientClientSettings
+        with open("cdk\CognitoUserPoolClientClientSettings\index.js", encoding="utf-8") as fp:
+            code_body = fp.read()
 
-        # #CognitoUserPoolClientClientSettings
-        CognitoUserPoolClientClientSettings = cfn.CfnCustomResource(self,
-                                                                    "CognitoUserPoolClientClientSettings", service_token=CloudFormationCognitoUserPoolClientSettings.attr_arn)
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "UserPoolId", CognitoUserPool.ref)
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "UserPoolClientId", CognitoUserPoolClient.ref)
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "AppDomain", AppDomain.value_as_string)
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "SupportedIdentityProviders", ['COGNITO'])
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "CallbackURL", CallbackURL.value_as_string)
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "LogoutURL", LogoutURL.value_as_string)
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "AllowedOAuthFlowsUserPoolClient", True)
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "AllowedOAuthFlows", ['code']),
-        CognitoUserPoolClientClientSettings.add_property_override(
-            "AllowedOAuthScopes", ['openid'])
+        CognitoUserPoolClientClientSettings = cfn.CustomResource(
+            self, "CognitoUserPoolClientClientSettings",
+            provider=cfn.CustomResourceProvider.lambda_(
+                lambda_.SingletonFunction(
+                    self, "CognitoUserPoolClientClientSettingsLambda",
+                    uuid="f7d4f730-4ee1-11e8-9c2d-fa7ae01bbebc",
+                    code=lambda_.InlineCode(code_body),
+                    handler="index.handler",
+                    runtime=lambda_.Runtime.NODEJS_8_10,
+                    role=iam.Role.from_role_arn(self,'CustomResourceRoleiam', role_arn=CustomResourceRole.attr_arn)
+                )
+            ),
+            properties={"UserPoolId": CognitoUserPool.ref,
+                        "UserPoolClientId": CognitoUserPoolClient.ref,
+                        "AppDomain": AppDomain.value_as_string,
+                        "SupportedIdentityProviders": ['COGNITO'],
+                        "CallbackURL": CallbackURL.value_as_string,
+                        "LogoutURL": LogoutURL.value_as_string,
+                        "AllowedOAuthFlowsUserPoolClient": True,
+                        "AllowedOAuthFlows": ['code'],
+                        "AllowedOAuthScopes": ['openid']
+                        },
+        )
 
         # CognitoIdPool
         CognitoIdPool = cognito.CfnIdentityPool(self,'CognitoIdPool',
