@@ -261,3 +261,30 @@ class CognitoStack(core.Stack):
             }],
             allow_unauthenticated_identities=False
         )
+
+        # Output
+        core.CfnOutput(self, "CognitoUserPoolIdOutput",
+            value = CognitoUserPool.ref,
+            description = "The Pool ID of the Cognito User Pool",
+            export_name = "CognitoUserPoolId"
+        )
+        core.CfnOutput(self, "CognitoUserPoolProviderURLOutput",
+            value = CognitoUserPool.attr_provider_url,
+            description = "The Pool ProviderURL of the Cognito User Pool",
+            export_name = "CognitoUserPoolProviderURL"
+        )
+        core.CfnOutput(self, "CognitoUserPoolArnOutput",
+            value = CognitoUserPool.attr_arn,
+            description = "The Pool Arn of the Cognito User Pool",
+            export_name = "CognitoUserPoolArn"
+        )
+        core.CfnOutput(self, "CognitoUserPoolClientIdOutput",
+            value = CognitoUserPoolClient.ref,
+            description = "The App Client ID ",
+            export_name = "CognitoUserPoolClientId"
+        )
+        core.CfnOutput(self, "ClientSecretOutput",
+            value = core.Fn.get_att("CognitoUserPoolClientClientSettings","ClientSecret").to_string(),
+            description = "The Client Secret ",
+            export_name = "ClientSecret"
+        )
