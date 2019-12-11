@@ -12,6 +12,7 @@ from cdk.parameter_stack import ParametersStack
 from cdk.db_stack import DBStack
 from cdk.cognito_stack import CognitoStack
 from cdk.snssqs_stack import SnssqsStack
+from cdk.web_stack import WebStack
 
 app = core.App()
 CdkStack(app, "cdk")
@@ -24,4 +25,5 @@ ParametersStack(app, "ParametersStack")
 DBStack(app, "DBStack")
 SnssqsStack(app, "SnssqsStack")
 CognitoStack(app, "CognitoStack")
+WebStack(app, "WebStack")
 app.synth()
