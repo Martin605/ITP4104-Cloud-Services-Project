@@ -1,5 +1,5 @@
 #  ITP4104 Cloud Services Project
-#  180105912-180081307-180424032-180509181
+180105912-180081307-180424032-180509181
 ## Rewrite CloudFormation
 https://github.com/wongcyrus/AWS-Developer-Building-on-AWS
 ## Rewritten Exercise
