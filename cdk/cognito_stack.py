@@ -221,7 +221,7 @@ class CognitoStack(core.Stack):
         )
 
         # CognitoUserPoolClientClientSettings
-        with open("cdk\CognitoUserPoolClientClientSettings\index.js", encoding="utf-8") as fp:
+        with open("./cdk/CognitoUserPoolClientClientSettings/index.js", encoding="utf-8") as fp:
             code_body = fp.read()
 
         CognitoUserPoolClientClientSettings = cfn.CustomResource(
