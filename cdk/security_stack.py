@@ -10,17 +10,6 @@ class SecurityStack(core.Stack):
     super().__init__(scope, id, **kwargs)
     
     # Exercise 11
-    # Set Parameters
-    ec2_vpc_id = core.CfnParameter(self, "EC2VpcId",
-      type = "AWS::EC2::VPC::Id",
-      default = "AWS::EC2::VPC::Id"
-    )
-        
-    edx_project_cloud9_sg = core.CfnParameter(self, "EdxProjectCloud9Sg",
-      type = "AWS::EC2::SecurityGroup::Id",
-      default = "AWS::EC2::SecurityGroup::Id"
-    )
-    
     # WebServerRole
     web_server_role = iam.CfnRole(self, "WebServerRole",
       role_name= "ec2-webserver-role",

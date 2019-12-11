@@ -25,7 +25,7 @@ class SnssqsStack(core.Stack):
         )
         
         # LambdaExecutionRole
-        LambdaExecutionRole = iam.CfnRole(self, "LambdaExecutionRole",
+        LambdaExecutionRole = iam.CfnRole(self, "LabelsLambdaExecutionRole",
             assume_role_policy_document = {
                 "Version": "2012-10-17",
                 "Statement": [
@@ -42,9 +42,9 @@ class SnssqsStack(core.Stack):
                 }]
             },
             managed_policy_arns = [
-                "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-                "arn:aws:iam::aws:policy/AmazonRekognitionReadOnlyAccess"
-                "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+                "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+                "arn:aws:iam::aws:policy/AmazonRekognitionReadOnlyAccess",
+                "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
                 "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
             ],
             policies = [
@@ -65,8 +65,7 @@ class SnssqsStack(core.Stack):
         )
         
         # S3 Bucket
-        aws_account_id = core.Aws.ACCOUNT_ID
-        source_bucket = "sourcebucketname%s" % (aws_account_id) 
+        source_bucket = "sourcebucketname%s" % (core.Aws.ACCOUNT_ID) 
         
         # LabelsLambda
         LabelsLambda = lambda_.CfnFunction(self, "LabelsLambda",
@@ -82,7 +81,7 @@ class SnssqsStack(core.Stack):
                 "mode" : "Active"
             },
             vpc_config = {
-                "securityGroupIds" : [core.Fn.import_value("LambdaSecurityGroup")],
+                "securityGroupIds" : [core.Fn.import_value("LambdaSecurityGroupOutput")],
                 "subnetIds" : [
                     core.Fn.import_value("PrivateSubnet1"),
                     core.Fn.import_value("PrivateSubnet2")
@@ -100,7 +99,9 @@ class SnssqsStack(core.Stack):
         
         # UploadQueue
         upload_queue = sqs.CfnQueue(self, "UploadQueue", 
-            queue_name = "uploads-queue"
+            queue_name = "uploads-queue",
+            message_retention_period = 12800,
+            visibility_timeout = 300
         )
         
         # UploadSNSTopic
@@ -126,14 +127,15 @@ class SnssqsStack(core.Stack):
                     "Sid" : "Allow-SendMessage-To-Queues-From-SNS-Topic",
                     "Effect" : "Allow",
                     "Principal" : "*" ,
-                    "Action" : ["sqs:SendMessage"],
-                    "Resource" : {
-                        "Condition" : {
-                            "ArnEquals" : {
-                                "aws:SourceArn" : upload_sns_topic.ref
-                            }
+                    "Action" : [
+                        "SQS:SendMessage"
+                    ],
+                    "Resource" : "*",
+                    "Condition":{
+                        "ArnEquals":{
+                            "aws:SourceArn": "%s" % (upload_sns_topic.ref)
                         }
-                    },
+                    }
                 }]
             }
         ) 
@@ -146,16 +148,23 @@ class SnssqsStack(core.Stack):
                 "Statement" : [{
                     "Sid" : "Allow-S3-Publish",
                     "Effect" : "Allow",
-                    "Principal" : { "AWS" : "*" },
-                    "Action" : "SNS:Publish",
+                    "Principal" : {
+                        "Service": "s3.amazonaws.com"
+                    },
+                    "Action" : [
+                        "SNS:Publish"
+                    ],
                     "Resource" : upload_sns_topic.ref,
                     "Condition" : {
+                        "StringEquals": {
+                            "aws:SourceAccount": "!Sub '${AWS::AccountId}'"
+                        },
                         "ArnLike" : {
                             "aws:SourceArn" : {
                                 "Fn::Join" : [
-                                    '""',
+                                    "",
                                     [
-                                        "arn:aws:s3:::",
+                                        "arn:aws:s3:*:*:",
                                         "!Sub 'imagebucketsns${AWS::AccountId}'"
                                     ]
                                 ]
@@ -177,6 +186,7 @@ class SnssqsStack(core.Stack):
               }]
             }
         )
+        image_s3_bucket.add_depends_on(upload_topic_policy)
         image_s3_bucket.apply_removal_policy(core.RemovalPolicy.DESTROY)
 
         # ImageS3BucketPermission

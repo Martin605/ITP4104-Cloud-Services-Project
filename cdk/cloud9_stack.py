@@ -13,12 +13,6 @@ class Cloud9Stack(core.Stack):
         super().__init__(scope, id, **kwargs)
 
         # Exercise 9
-        # Set Parameters
-        # PublicSubnet1 = core.CfnParameter(self, "PublicSubnet1",
-        #     type = "AWS::EC2::Subnet::Id",
-        #     default =  "PublicSubnet1"
-        # )
-        
         # LambdaExecutionRole
         lambda_execution_role = iam.CfnRole(self, "LambdaExecutionRole",
             role_name= "lambda-execution-role",

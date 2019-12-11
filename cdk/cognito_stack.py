@@ -36,8 +36,8 @@ class CognitoStack(core.Stack):
             type="String",
             default="default"
         )
+        
         # CognitoSNSPolicy
-
         CognitoSNSPolicy = iam.CfnManagedPolicy(
             self, 'CognitoSNSPolicy',
             description='Managed policy to allow Amazon Cognito to access SNS',
