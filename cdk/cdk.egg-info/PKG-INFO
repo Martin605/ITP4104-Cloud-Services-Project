@@ -9,16 +9,16 @@ Description: # ITP4104 Project
         ## Rewrite CloudFormation
         https://github.com/wongcyrus/AWS-Developer-Building-on-AWS
         ## Rewritten Exercise
-        * `IAMStack      :Exercise5 (Monty)`
-        * `VPCStack      :Exercise3 (Monty)`
-        * `SecurityStack :Exercise11(Monty)`
-        * `DBStack       :Exercise11(Monty)`
+        * `IAMStack      :Exercise5`
+        * `VPCStack      :Exercise3`
+        * `SecurityStack :Exercise11`
+        * `DBStack       :Exercise11`
         
           `WebStack      :Exercise10`
-        * `CDNStack      :Exercise9 (Monty)`
-        * `ParametesStack:Exercise9 (Jacky)`
-        * `Cloud9Stack   :Exercise9 (Monty)`
-        * `CognitoStack  :Exercise9 (Jacky,Martin)`
+        * `CDNStack      :Exercise9`
+        * `ParametesStack:Exercise9`
+        * `Cloud9Stack   :Exercise9`
+        * `CognitoStack  :Exercise9`
         
           `SNSSQSStack   :Exercise12(Monty)`
         

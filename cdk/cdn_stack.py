@@ -76,7 +76,7 @@ class CdnStack(core.Stack):
         
         # CloudWatchRole
         cloud_watch_role = iam.CfnRole(self, "CloudWatchRole",
-            role_name= "lambda-execution-role",
+            role_name= "cloud-watch-lambda-execution-role",
             assume_role_policy_document = {
                 "Version": "2012-10-17",
                 "Statement": [
