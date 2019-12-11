@@ -44,7 +44,6 @@ class CdkStack(core.Stack):
                 "PublicSubnet1" : core.Fn.import_value("PublicSubnet1")
             }
         '''
-        
         cloud9_stack = Cloud9Stack(self, "Cloud9Stack")
         iam_stack = IAMStack(self, "IAMStack")
         vpc_stack = VpcStack(self, "VpcStack")

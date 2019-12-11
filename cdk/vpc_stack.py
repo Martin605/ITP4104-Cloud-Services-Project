@@ -1,11 +1,10 @@
 from aws_cdk import (
     aws_ec2 as ec2,
-    aws_iam as iam,
-    aws_cloudformation as cloudformation,
     core
     )
-    
-class VpcStack(core.Construct):
+from datetime import datetime
+
+class VpcStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
@@ -41,7 +40,7 @@ class VpcStack(core.Construct):
         
         # Create Public Subnet 1
         public_subnet_1 = ec2.CfnSubnet(self, "PublicSubnet1",
-            availability_zone = "us-east-1a",
+            availability_zone = core.Fn.select(0,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.1.0/24",
             vpc_id = vpc.ref,
             map_public_ip_on_launch = True,
@@ -80,7 +79,7 @@ class VpcStack(core.Construct):
         
         # Create Public Subnet 2
         public_subnet_2 = ec2.CfnSubnet(self, "PublicSubnet2",
-            availability_zone = "us-east-1b",
+            availability_zone = core.Fn.select(1,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.2.0/24",
             vpc_id = vpc.ref,
             map_public_ip_on_launch = True,
@@ -142,7 +141,7 @@ class VpcStack(core.Construct):
         
         # Create Private Subnet 1
         private_subnet_1 = ec2.CfnSubnet(self, "PrivateSubnet1",
-            availability_zone = "us-east-1a",
+            availability_zone = core.Fn.select(0,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.3.0/24",
             vpc_id = vpc.ref,
             tags = [{
@@ -153,7 +152,7 @@ class VpcStack(core.Construct):
         
         # Create Private Subnet 2
         private_subnet_2 = ec2.CfnSubnet(self, "PrivateSubnet2",
-            availability_zone = "us-east-1b",
+            availability_zone = core.Fn.select(1,core.Fn.get_azs(core.Aws.REGION)),
             cidr_block = "10.1.4.0/24",
             vpc_id = vpc.ref,
             tags = [{
