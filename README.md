@@ -3,16 +3,16 @@
 ## Rewrite CloudFormation
 https://github.com/wongcyrus/AWS-Developer-Building-on-AWS
 ## Rewritten Exercise
-* `IAMStack      :Exercise5`      `first deploy`
-* `VPCStack      :Exercise3`      `first deploy`
-* `ParametersStack:Exercise9`      `first deploy`
-* `CognitoStack  :Exercise9`      `first deploy`
-* `SecurityStack :Exercise11`     `second deploy`
-* `Cloud9Stack   :Exercise9`      `second deploy`
-* `CDNStack      :Exercise9`      `thrid deploy`
-* `DBStack       :Exercise11`     `thrid deploy`
-* `WebStack      :Exercise10`     `final deploy`
-* `SNSSQSStack   :Exercise12`     `final deploy`
+* `IAMStack      :Exercise5`      `first deploy`    `finished`
+* `VPCStack      :Exercise3`      `first deploy`    `finished`
+* `ParametersStack:Exercise9`      `first deploy`   `finished`
+* `CognitoStack  :Exercise9`      `first deploy`    `finished`
+* `SecurityStack :Exercise11`     `second deploy`   `finished`
+* `Cloud9Stack   :Exercise9`      `second deploy`   `finished`
+* `CDNStack      :Exercise9`      `thrid deploy`    `finished`
+* `DBStack       :Exercise11`     `thrid deploy`    `finished`
+* `WebStack      :Exercise10`     `final deploy`    `error in 7/10`
+* `SNSSQSStack   :Exercise12`     `final deploy`    `error in 2/5`
 
 ### Welcome to CDK Python project!
 
