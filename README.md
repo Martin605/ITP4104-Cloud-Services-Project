@@ -5,7 +5,7 @@ https://github.com/wongcyrus/AWS-Developer-Building-on-AWS
 ## Rewritten Exercise
 * `IAMStack      :Exercise5`      `first deploy`
 * `VPCStack      :Exercise3`      `first deploy`
-* `ParametesStack:Exercise9`      `first deploy`
+* `ParametersStack:Exercise9`      `first deploy`
 * `CognitoStack  :Exercise9`      `first deploy`
 * `SecurityStack :Exercise11`     `second deploy`
 * `Cloud9Stack   :Exercise9`      `second deploy`
