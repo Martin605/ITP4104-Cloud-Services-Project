@@ -10,6 +10,10 @@ echo -e "\033[36mInstall requirements requirements.txt\033[0m"
 pip install -r requirements.txt
 echo -e "\033[36mCDK synth\033[0m"
 cdk synth
-echo -e "\033[36mCDK deploy\033[0m"
-cdk deploy
+echo -e "\033[36mCDK deploy VpcStack IAMStack ParametesStack CognitoStack\033[0m"
+cdk deploy VpcStack IAMStack ParametersStack CognitoStack
+echo -e "\033[36mCDK deploy VpcStack\033[0m"
+cdk deploy SecurityStack Cloud9Stack 
+echo -e "\033[36mCDK deploy VpcStack\033[0m"
+cdk deploy CDNStack  DBStack  
 echo -e "\033[35mEND\033[0m"
