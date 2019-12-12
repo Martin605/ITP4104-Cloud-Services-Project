@@ -15,5 +15,5 @@ cdk deploy VpcStack IAMStack ParametersStack CognitoStack
 echo -e "\033[36mCDK deploy VpcStack\033[0m"
 cdk deploy SecurityStack Cloud9Stack 
 echo -e "\033[36mCDK deploy VpcStack\033[0m"
-cdk deploy CDNStack  DBStack  
+cdk deploy CdnStack DBStack  
 echo -e "\033[35mEND\033[0m"
