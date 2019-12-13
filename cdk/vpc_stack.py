@@ -8,7 +8,22 @@ class VpcStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
-
+        
+        # vpc = ec2.Vpc(self, "VPC",
+        #     cidr = "10.1.0.0/16",
+        #     max_azs = 2,
+        #     subnet_configuration =[
+        #         ec2.SubnetConfiguration(name='edx-subnet-Public', subnet_type=ec2.SubnetType.PUBLIC, cidr_mask=24),
+        #         ec2.SubnetConfiguration(name='edx-subnet-Private', subnet_type=ec2.SubnetType.PRIVATE, cidr_mask=24),
+        #     ]
+        # )
+        
+        # core.Tag.add(vpc, key = "Name", value = "edx-build-aws-vpc")
+        # core.Tag.add(vpc.public_subnets[0], key = "Name", value = "edx-subnet-public-a") 
+        # core.Tag.add(vpc.public_subnets[1], key = "Name", value = "edx-subnet-public-b")
+        # core.Tag.add(vpc.private_subnets[0], key = "Name", value = "edx-subnet-public-a") 
+        # core.Tag.add(vpc.private_subnets[1], key = "Name", value = "edx-subnet-public-b")
+        
         # Exercise 3
         # Create VPC
         vpc = ec2.CfnVPC(self, "VPC",
